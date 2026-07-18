@@ -38,10 +38,10 @@ struct AlbumDetailView: View {
                         player.play(track, in: album.tracks)
                     }
                 }
-                .listRowBackground(AppTheme.paper)
                 .onDelete { offsets in
                     deleteTracks(at: offsets, from: album)
                 }
+                .listRowBackground(AppTheme.paper)
             }
         }
         .listStyle(.insetGrouped)
