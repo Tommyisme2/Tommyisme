@@ -15,24 +15,13 @@ struct SettingsView: View {
     var body: some View {
         List {
             Section {
-                HStack {
-                    Label("Songs", systemImage: "music.note")
-                    Spacer()
-                    Text("\(library.tracks.count)")
-                        .foregroundStyle(.secondary)
+                HStack(spacing: 10) {
+                    LibraryStat(value: "\(library.tracks.count)", label: "SONGS")
+                    LibraryStat(value: "\(library.albums.count)", label: "ALBUMS")
+                    LibraryStat(value: totalSize, label: "STORAGE")
                 }
-                HStack {
-                    Label("Albums", systemImage: "square.stack")
-                    Spacer()
-                    Text("\(library.albums.count)")
-                        .foregroundStyle(.secondary)
-                }
-                HStack {
-                    Label("Local storage", systemImage: "internaldrive")
-                    Spacer()
-                    Text(totalSize)
-                        .foregroundStyle(.secondary)
-                }
+                .padding(.vertical, 8)
+                .listRowBackground(AppTheme.paper)
             } header: {
                 Text("Library")
             }
@@ -51,5 +40,29 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.canvas)
+        .tint(AppTheme.ink)
+    }
+}
+
+private struct LibraryStat: View {
+    let value: String
+    let label: String
+
+    var body: some View {
+        VStack(spacing: 5) {
+            Text(value)
+                .font(.system(.headline, design: .rounded, weight: .black))
+                .lineLimit(1)
+                .minimumScaleFactor(0.65)
+            Text(label)
+                .font(.system(size: 9, weight: .bold))
+                .tracking(0.8)
+                .foregroundStyle(AppTheme.muted)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 78)
+        .background(AppTheme.canvas, in: RoundedRectangle(cornerRadius: 16))
     }
 }

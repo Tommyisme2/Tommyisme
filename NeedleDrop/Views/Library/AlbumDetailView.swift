@@ -18,33 +18,56 @@ struct AlbumDetailView: View {
             if let album {
                 List {
                     Section {
-                        VStack(spacing: 14) {
-                            ArtworkView(fileName: album.artworkFileName)
-                                .frame(maxWidth: 260)
-                                .aspectRatio(1, contentMode: .fit)
-                                .shadow(color: .black.opacity(0.17), radius: 16, y: 9)
-                            VStack(spacing: 4) {
+                        VStack(spacing: 18) {
+                            ZStack {
+                                Circle()
+                                    .fill(AppTheme.ink)
+                                    .frame(width: 190, height: 190)
+                                    .offset(x: 58)
+                                    .overlay {
+                                        Circle()
+                                            .stroke(.white.opacity(0.1), lineWidth: 1)
+                                            .frame(width: 152, height: 152)
+                                            .offset(x: 58)
+                                    }
+                                ArtworkView(fileName: album.artworkFileName, cornerRadius: 16)
+                                    .frame(width: 190, height: 190)
+                                    .offset(x: -42)
+                                    .shadow(color: .black.opacity(0.18), radius: 12, y: 8)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 210)
+
+                            VStack(spacing: 5) {
+                                Text(album.artist.uppercased())
+                                    .font(.caption2.bold())
+                                    .tracking(1.3)
+                                    .foregroundStyle(AppTheme.muted)
                                 Text(album.title)
-                                    .font(.title2.bold())
-                                Text(album.artist)
-                                    .foregroundStyle(.secondary)
-                                Text(album.year.map(String.init) ?? "\(album.tracks.count) tracks")
+                                    .font(.system(size: 30, weight: .black, design: .rounded))
+                                    .multilineTextAlignment(.center)
+                                Text("\(album.year.map(String.init) ?? "LOCAL") · \(album.tracks.count) TRACKS · \(album.duration.clockString)")
                                     .font(.caption)
-                                    .foregroundStyle(.tertiary)
+                                    .foregroundStyle(AppTheme.muted)
                             }
                             Button {
                                 if let first = album.tracks.first {
                                     player.play(first, in: album.tracks)
                                 }
                             } label: {
-                                Label("Play album", systemImage: "play.fill")
+                                Label("PLAY ALBUM", systemImage: "play.fill")
+                                    .font(.subheadline.bold())
+                                    .tracking(0.6)
                                     .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 6)
                             }
                             .buttonStyle(.borderedProminent)
-                            .tint(.orange)
+                            .buttonBorderShape(.capsule)
+                            .tint(AppTheme.ink)
                         }
+                        .padding(.vertical, 8)
                         .frame(maxWidth: .infinity)
-                        .listRowBackground(Color.clear)
+                        .listRowBackground(AppTheme.paper)
                     }
 
                     Section("Tracks") {
@@ -54,11 +77,13 @@ struct AlbumDetailView: View {
                             } label: {
                                 HStack(spacing: 12) {
                                     Text(track.trackNumber.map(String.init) ?? "–")
-                                        .font(.caption.monospacedDigit())
-                                        .foregroundStyle(.secondary)
-                                        .frame(width: 24)
+                                        .font(.caption.bold().monospacedDigit())
+                                        .foregroundStyle(.white)
+                                        .frame(width: 30, height: 30)
+                                        .background(AppTheme.ink, in: Circle())
                                     VStack(alignment: .leading, spacing: 3) {
                                         Text(track.title)
+                                            .fontWeight(.semibold)
                                             .foregroundStyle(.primary)
                                         Text(track.artist)
                                             .font(.caption)
@@ -71,6 +96,7 @@ struct AlbumDetailView: View {
                                 }
                             }
                         }
+                        .listRowBackground(AppTheme.paper)
                         .onDelete { offsets in
                             library.delete(offsets.map { album.tracks[$0] })
                             if library.albums.first(where: { $0.id == albumID }) == nil {
@@ -80,11 +106,14 @@ struct AlbumDetailView: View {
                     }
                 }
                 .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden)
+                .background(AppTheme.canvas)
                 .navigationTitle(album.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     Button("Edit") { isEditing = true }
                 }
+                .tint(AppTheme.ink)
                 .sheet(isPresented: $isEditing) {
                     AlbumEditorView(album: album)
                 }

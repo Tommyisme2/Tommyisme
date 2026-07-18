@@ -20,6 +20,23 @@ struct SongsView: View {
 
     var body: some View {
         List {
+            Section {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("ALL TRACKS")
+                            .font(.caption2.bold())
+                            .tracking(1.4)
+                            .foregroundStyle(AppTheme.muted)
+                        Text("\(library.tracks.count) songs")
+                            .font(.system(size: 28, weight: .black, design: .rounded))
+                    }
+                    Spacer()
+                    SpeakerGrille(rows: 5, columns: 5, dotSize: 5)
+                }
+                .padding(.vertical, 10)
+                .listRowBackground(AppTheme.paper)
+            }
+
             ForEach(filteredTracks) { track in
                 HStack(spacing: 8) {
                     Button {
@@ -61,6 +78,7 @@ struct SongsView: View {
                             .frame(width: 32, height: 40)
                     }
                 }
+                .listRowBackground(AppTheme.paper)
             }
         }
         .overlay {
@@ -73,6 +91,9 @@ struct SongsView: View {
             }
         }
         .navigationTitle("Songs")
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.canvas)
+        .tint(AppTheme.ink)
         .searchable(text: $searchText, prompt: "Songs, artists, albums")
         .sheet(item: $editingTrack) { track in
             TrackEditorView(track: track)

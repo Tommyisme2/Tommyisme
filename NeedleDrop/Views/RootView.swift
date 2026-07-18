@@ -31,14 +31,16 @@ struct RootView: View {
             }
             .tabItem { Label("Settings", systemImage: "slider.horizontal.3") }
         }
-        .tint(.orange)
+        .tint(AppTheme.ink)
+        .toolbarBackground(AppTheme.paper, for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if player.currentTrack != nil {
                 MiniPlayer {
                     isShowingPlayer = true
                 }
-                .padding(.horizontal, 12)
-                .padding(.bottom, 2)
+                .padding(.horizontal, 10)
+                .padding(.bottom, 4)
             }
         }
         .sheet(isPresented: $isShowingPlayer) {
@@ -74,15 +76,15 @@ private struct MiniPlayer: View {
         HStack(spacing: 8) {
             Button(action: open) {
                 HStack(spacing: 12) {
-                    ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 10)
-                        .frame(width: 46, height: 46)
+                    ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 8)
+                        .frame(width: 44, height: 44)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(player.currentTrack?.title ?? "")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.subheadline.weight(.bold))
                             .lineLimit(1)
                         Text(player.currentTrack?.artist ?? "")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.58))
                             .lineLimit(1)
                     }
                     Spacer()
@@ -91,17 +93,16 @@ private struct MiniPlayer: View {
             .buttonStyle(PressableButtonStyle())
             Button(action: player.togglePlayback) {
                 Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
-                    .font(.title3)
-                    .frame(width: 38, height: 38)
+                    .font(.system(size: 14, weight: .bold))
+                    .frame(width: 40, height: 40)
+                    .background(.white, in: Circle())
+                    .foregroundStyle(AppTheme.ink)
             }
             .buttonStyle(PressableButtonStyle())
         }
         .padding(8)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(.white.opacity(0.55), lineWidth: 0.5)
-        }
-        .foregroundStyle(.primary)
+        .background(AppTheme.ink, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
+        .foregroundStyle(.white)
+        .shadow(color: .black.opacity(0.18), radius: 14, y: 7)
     }
 }

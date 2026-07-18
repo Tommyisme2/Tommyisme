@@ -10,30 +10,33 @@ struct PlayerView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(red: 0.91, green: 0.90, blue: 0.87)
+                AppTheme.canvas
                     .ignoresSafeArea()
 
-                VStack(spacing: 28) {
-                    Spacer()
-                    record
-                    metadata
-                    progress
-                    controls
-                    Spacer()
+                ScrollView {
+                    VStack(spacing: 24) {
+                        SpeakerGrille(rows: 5, columns: 11, dotSize: 6)
+                            .padding(.top, 12)
+                        recordDeck
+                        metadata
+                        progress
+                        controls
+                    }
+                    .padding(.horizontal, 22)
+                    .padding(.bottom, 28)
                 }
-                .padding(.horizontal, 30)
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: dismiss.callAsFunction) {
-                        Image(systemName: "chevron.down")
+                        Image(systemName: "arrow.down")
+                            .fontWeight(.bold)
                     }
                 }
                 ToolbarItem(placement: .principal) {
-                    Text("NOW PLAYING")
-                        .font(.caption2.weight(.semibold))
-                        .tracking(1.4)
-                        .foregroundStyle(.secondary)
+                    Text("PLAYING NOW")
+                        .font(.caption2.bold())
+                        .tracking(1.6)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -46,23 +49,26 @@ struct PlayerView: View {
                 }
             }
             .toolbarBackground(.hidden, for: .navigationBar)
+            .tint(AppTheme.ink)
             .onChange(of: player.elapsed) { _, value in
                 if !isScrubbing { scrubValue = value }
             }
         }
     }
 
-    private var record: some View {
+    private var recordDeck: some View {
         ZStack {
             Circle()
-                .fill(.black)
+                .fill(AppTheme.ink)
                 .overlay {
-                    ForEach(0..<8) { index in
+                    ForEach(0..<7) { index in
                         Circle()
-                            .stroke(.white.opacity(0.08), lineWidth: 1)
-                            .padding(CGFloat(index) * 13 + 12)
+                            .stroke(.white.opacity(0.10), lineWidth: 1)
+                            .padding(CGFloat(index) * 11 + 12)
                     }
                 }
+                .frame(width: 230, height: 230)
+                .offset(x: 58)
                 .rotationEffect(.degrees(player.isPlaying ? 360 : 0))
                 .animation(
                     player.isPlaying
@@ -70,29 +76,35 @@ struct PlayerView: View {
                         : .default,
                     value: player.isPlaying
                 )
-            ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 999)
-                .padding(78)
-            Circle()
-                .fill(Color(red: 0.91, green: 0.90, blue: 0.87))
-                .frame(width: 16, height: 16)
+            ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 18)
+                .frame(width: 230, height: 230)
+                .offset(x: -42)
+                .shadow(color: .black.opacity(0.24), radius: 14, y: 9)
         }
-        .frame(maxWidth: 340)
-        .aspectRatio(1, contentMode: .fit)
-        .shadow(color: .black.opacity(0.22), radius: 22, y: 14)
+        .frame(maxWidth: .infinity)
+        .frame(height: 260)
+        .padding(.vertical, 10)
+        .background(AppTheme.paper, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .stroke(AppTheme.ink.opacity(0.08), lineWidth: 1)
+        }
     }
 
     private var metadata: some View {
-        VStack(spacing: 7) {
+        VStack(spacing: 6) {
+            Text(player.currentTrack?.artist.uppercased() ?? "")
+                .font(.caption2.bold())
+                .tracking(1.4)
+                .foregroundStyle(AppTheme.muted)
             Text(player.currentTrack?.title ?? "Nothing Playing")
-                .font(.title2.bold())
+                .font(.system(size: 34, weight: .black, design: .rounded))
                 .multilineTextAlignment(.center)
-            Text(player.currentTrack?.artist ?? "")
-                .font(.body)
-                .foregroundStyle(.secondary)
             Text(player.currentTrack?.album ?? "")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.muted)
         }
+        .frame(maxWidth: .infinity)
     }
 
     private var progress: some View {
@@ -105,34 +117,44 @@ struct PlayerView: View {
                     if !editing { player.seek(to: scrubValue) }
                 }
             )
-            .tint(.orange)
+            .tint(AppTheme.orange)
             HStack {
                 Text(scrubValue.clockString)
                 Spacer()
                 Text(player.duration.clockString)
             }
             .font(.caption.monospacedDigit())
-            .foregroundStyle(.secondary)
+            .foregroundStyle(AppTheme.muted)
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(AppTheme.paper, in: RoundedRectangle(cornerRadius: 16))
     }
 
     private var controls: some View {
-        HStack(spacing: 44) {
+        HStack(spacing: 18) {
             Button(action: player.previous) {
                 Image(systemName: "backward.fill")
+                    .frame(width: 62, height: 62)
+                    .background(.white.opacity(0.10), in: Circle())
             }
             Button(action: player.togglePlayback) {
                 Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
-                    .font(.system(size: 32))
-                    .frame(width: 74, height: 74)
-                    .background(.black, in: Circle())
-                    .foregroundStyle(.white)
+                    .font(.system(size: 30))
+                    .frame(width: 82, height: 82)
+                    .background(AppTheme.orange, in: Circle())
             }
             Button(action: player.next) {
                 Image(systemName: "forward.fill")
+                    .frame(width: 62, height: 62)
+                    .background(.white.opacity(0.10), in: Circle())
             }
         }
         .font(.title2)
         .buttonStyle(PressableButtonStyle())
+        .foregroundStyle(.white)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 22)
+        .background(AppTheme.ink, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
     }
 }
