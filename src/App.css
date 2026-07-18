@@ -261,10 +261,10 @@
   margin: 0 0 1.1rem;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3.4rem, 11vw, 7.2rem);
+  font-size: clamp(2.55rem, 12.5vw, 7.2rem);
   line-height: 0.92;
   letter-spacing: -0.055em;
-  max-width: 10ch;
+  max-width: 100%;
   animation: rise-in 700ms var(--ease-out) both;
 }
 
@@ -471,12 +471,21 @@
   grid-template-columns: auto 1fr;
   gap: 1rem;
   align-items: start;
-  padding: 1.1rem 0;
+  padding: 1.1rem 0.35rem 1.1rem 0;
   border-top: 1px solid var(--line);
+  transition:
+    background 180ms var(--ease-soft),
+    padding 180ms var(--ease-out);
 }
 
 .practice-step:last-child {
   border-bottom: 1px solid var(--line);
+}
+
+.practice-step:hover {
+  background: rgba(255, 255, 255, 0.4);
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
 }
 
 .practice-index {
@@ -562,11 +571,11 @@
 }
 
 .connect {
-  padding-bottom: calc(var(--space-2xl) + 1rem);
+  padding-bottom: calc(var(--space-xl) + 1rem);
 }
 
 .connect-panel {
-  margin-top: var(--space-lg);
+  margin-top: var(--space-md);
   display: grid;
   gap: 1.25rem;
   align-items: start;
