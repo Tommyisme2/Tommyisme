@@ -261,10 +261,11 @@
   margin: 0 0 1.1rem;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(2.55rem, 12.5vw, 7.2rem);
+  font-size: clamp(2rem, calc((100vw - 2.5rem) / 10.1), 7.2rem);
   line-height: 0.92;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.06em;
   max-width: 100%;
+  white-space: nowrap;
   animation: rise-in 700ms var(--ease-out) both;
 }
 
@@ -282,6 +283,17 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   animation: rise-in 700ms var(--ease-out) 220ms both;
+}
+
+@media (max-width: 420px) {
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
 }
 
 @keyframes rise-in {
