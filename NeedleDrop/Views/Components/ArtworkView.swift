@@ -1,13 +1,13 @@
 import SwiftUI
 
 enum AppTheme {
-    static let canvas = Color(red: 0.93, green: 0.92, blue: 0.88)
-    static let paper = Color(red: 0.98, green: 0.98, blue: 0.96)
-    static let ink = Color(red: 0.04, green: 0.04, blue: 0.04)
-    static let muted = Color(red: 0.57, green: 0.56, blue: 0.52)
-    static let orange = Color(red: 1.0, green: 0.31, blue: 0.18)
-    static let green = Color(red: 0.10, green: 0.48, blue: 0.23)
-    static let yellow = Color(red: 1.0, green: 0.82, blue: 0.0)
+    static let canvas = Color(red: 0.945, green: 0.94, blue: 0.925)
+    static let paper = Color(red: 0.985, green: 0.982, blue: 0.972)
+    static let raised = Color(red: 0.90, green: 0.895, blue: 0.875)
+    static let ink = Color(red: 0.075, green: 0.073, blue: 0.068)
+    static let muted = Color(red: 0.43, green: 0.42, blue: 0.39)
+    static let orange = Color(red: 0.76, green: 0.25, blue: 0.10)
+    static let panelStroke = Color.black.opacity(0.09)
 }
 
 struct ArtworkView: View {
@@ -25,17 +25,70 @@ struct ArtworkView: View {
                     .scaledToFill()
             } else {
                 ZStack {
-                    AppTheme.paper
+                    LinearGradient(
+                        colors: [Color(red: 0.76, green: 0.79, blue: 0.78),
+                                 Color(red: 0.38, green: 0.43, blue: 0.45)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
                     Circle()
-                        .fill(AppTheme.ink)
+                        .fill(
+                            AngularGradient(
+                                colors: [.black, Color(white: 0.18), .black, Color(white: 0.12), .black],
+                                center: .center
+                            )
+                        )
                         .padding(22)
                     Circle()
-                        .fill(AppTheme.orange)
-                        .frame(width: 22, height: 22)
+                        .fill(Color(red: 0.82, green: 0.76, blue: 0.63))
+                        .frame(width: 34, height: 34)
+                    Circle()
+                        .fill(AppTheme.ink)
+                        .frame(width: 6, height: 6)
                 }
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+    }
+}
+
+struct VinylRecordView: View {
+    var artworkFileName: String?
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    AngularGradient(
+                        colors: [
+                            Color(white: 0.025),
+                            Color(white: 0.15),
+                            Color(white: 0.035),
+                            Color(white: 0.11),
+                            Color(white: 0.025)
+                        ],
+                        center: .center
+                    )
+                )
+            ForEach(0..<11, id: \.self) { index in
+                Circle()
+                    .stroke(.white.opacity(index.isMultiple(of: 3) ? 0.10 : 0.045), lineWidth: 0.7)
+                    .padding(CGFloat(index) * 7 + 7)
+            }
+            ArtworkView(fileName: artworkFileName, cornerRadius: 999)
+                .padding(72)
+            Circle()
+                .fill(Color(white: 0.08))
+                .frame(width: 7, height: 7)
+            LinearGradient(
+                colors: [.white.opacity(0.18), .clear, .clear],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .clipShape(Circle())
+        }
+        .aspectRatio(1, contentMode: .fit)
+        .shadow(color: .black.opacity(0.24), radius: 12, y: 7)
     }
 }
 
@@ -50,8 +103,16 @@ struct SpeakerGrille: View {
                 HStack(spacing: dotSize * 0.85) {
                     ForEach(0..<columns, id: \.self) { _ in
                         Circle()
-                            .fill(AppTheme.ink)
+                            .fill(
+                                RadialGradient(
+                                    colors: [Color(white: 0.03), Color(white: 0.22)],
+                                    center: .topLeading,
+                                    startRadius: 0,
+                                    endRadius: dotSize
+                                )
+                            )
                             .frame(width: dotSize, height: dotSize)
+                            .shadow(color: .white.opacity(0.45), radius: 0.4, x: -0.4, y: -0.4)
                     }
                 }
             }
@@ -69,8 +130,12 @@ struct EditorialIconButton: View {
             Image(systemName: systemName)
                 .font(.system(size: 15, weight: .bold))
                 .frame(width: 42, height: 42)
-                .background(AppTheme.paper, in: Circle())
-                .overlay { Circle().stroke(AppTheme.ink.opacity(0.08), lineWidth: 1) }
+                .background(
+                    LinearGradient(colors: [AppTheme.paper, AppTheme.raised], startPoint: .top, endPoint: .bottom),
+                    in: Circle()
+                )
+                .overlay { Circle().stroke(AppTheme.panelStroke, lineWidth: 1) }
+                .shadow(color: .black.opacity(0.10), radius: 3, y: 2)
         }
         .buttonStyle(PressableButtonStyle())
         .foregroundStyle(AppTheme.ink)

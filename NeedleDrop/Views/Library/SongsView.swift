@@ -28,10 +28,10 @@ struct SongsView: View {
                             .tracking(1.4)
                             .foregroundStyle(AppTheme.muted)
                         Text("\(library.tracks.count) songs")
-                            .font(.system(size: 28, weight: .black, design: .rounded))
+                            .font(.system(size: 25, weight: .bold))
                     }
                     Spacer()
-                    SpeakerGrille(rows: 5, columns: 5, dotSize: 5)
+                    SpeakerGrille(rows: 4, columns: 6, dotSize: 4)
                 }
                 .padding(.vertical, 10)
                 .listRowBackground(AppTheme.paper)

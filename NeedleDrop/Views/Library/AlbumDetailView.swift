@@ -84,7 +84,7 @@ private struct AlbumHeroView: View {
                     .tracking(1.3)
                     .foregroundStyle(AppTheme.muted)
                 Text(album.title)
-                    .font(.system(size: 30, weight: .black, design: .rounded))
+                    .font(.system(size: 29, weight: .bold))
                     .multilineTextAlignment(.center)
                 Text(summary)
                     .font(.caption)
@@ -111,15 +111,10 @@ private struct AlbumRecordArtwork: View {
 
     var body: some View {
         ZStack {
-            Circle()
-                .fill(AppTheme.ink)
+            VinylRecordView(artworkFileName: fileName)
                 .frame(width: 190, height: 190)
                 .offset(x: 58)
-            Circle()
-                .stroke(.white.opacity(0.1), lineWidth: 1)
-                .frame(width: 152, height: 152)
-                .offset(x: 58)
-            ArtworkView(fileName: fileName, cornerRadius: 16)
+            ArtworkView(fileName: fileName, cornerRadius: 8)
                 .frame(width: 190, height: 190)
                 .offset(x: -42)
                 .shadow(color: .black.opacity(0.18), radius: 12, y: 8)

@@ -15,7 +15,7 @@ struct PlayerView: View {
 
                 ScrollView {
                     VStack(spacing: 24) {
-                        SpeakerGrille(rows: 5, columns: 11, dotSize: 6)
+                        SpeakerGrille(rows: 4, columns: 13, dotSize: 4.5)
                             .padding(.top, 12)
                         recordDeck
                         metadata
@@ -58,15 +58,7 @@ struct PlayerView: View {
 
     private var recordDeck: some View {
         ZStack {
-            Circle()
-                .fill(AppTheme.ink)
-                .overlay {
-                    ForEach(0..<7) { index in
-                        Circle()
-                            .stroke(.white.opacity(0.10), lineWidth: 1)
-                            .padding(CGFloat(index) * 11 + 12)
-                    }
-                }
+            VinylRecordView(artworkFileName: player.currentTrack?.artworkFileName)
                 .frame(width: 230, height: 230)
                 .offset(x: 58)
                 .rotationEffect(.degrees(player.isPlaying ? 360 : 0))
@@ -76,19 +68,27 @@ struct PlayerView: View {
                         : .default,
                     value: player.isPlaying
                 )
-            ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 18)
+            ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 8)
                 .frame(width: 230, height: 230)
                 .offset(x: -42)
-                .shadow(color: .black.opacity(0.24), radius: 14, y: 9)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(.white.opacity(0.30), lineWidth: 0.7)
+                }
+                .shadow(color: .black.opacity(0.22), radius: 12, y: 8)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 260)
         .padding(.vertical, 10)
-        .background(AppTheme.paper, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .background(
+            LinearGradient(colors: [AppTheme.paper, AppTheme.raised], startPoint: .top, endPoint: .bottom),
+            in: RoundedRectangle(cornerRadius: 22, style: .continuous)
+        )
         .overlay {
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(AppTheme.ink.opacity(0.08), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(AppTheme.panelStroke, lineWidth: 1)
         }
+        .shadow(color: .black.opacity(0.08), radius: 12, y: 6)
     }
 
     private var metadata: some View {
@@ -98,7 +98,7 @@ struct PlayerView: View {
                 .tracking(1.4)
                 .foregroundStyle(AppTheme.muted)
             Text(player.currentTrack?.title ?? "Nothing Playing")
-                .font(.system(size: 34, weight: .black, design: .rounded))
+                .font(.system(size: 31, weight: .bold, design: .default))
                 .multilineTextAlignment(.center)
             Text(player.currentTrack?.album ?? "")
                 .font(.subheadline)
@@ -128,7 +128,11 @@ struct PlayerView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(AppTheme.paper, in: RoundedRectangle(cornerRadius: 16))
+        .background(AppTheme.paper, in: RoundedRectangle(cornerRadius: 12))
+        .overlay {
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(AppTheme.panelStroke, lineWidth: 1)
+        }
     }
 
     private var controls: some View {
@@ -136,18 +140,35 @@ struct PlayerView: View {
             Button(action: player.previous) {
                 Image(systemName: "backward.fill")
                     .frame(width: 62, height: 62)
-                    .background(.white.opacity(0.10), in: Circle())
+                    .background(
+                        LinearGradient(colors: [Color(white: 0.25), Color(white: 0.08)], startPoint: .top, endPoint: .bottom),
+                        in: Circle()
+                    )
+                    .overlay { Circle().stroke(.white.opacity(0.12), lineWidth: 1) }
             }
             Button(action: player.togglePlayback) {
                 Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
                     .font(.system(size: 30))
                     .frame(width: 82, height: 82)
-                    .background(AppTheme.orange, in: Circle())
+                    .background(
+                        LinearGradient(
+                            colors: [Color(red: 0.89, green: 0.34, blue: 0.16), AppTheme.orange],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ),
+                        in: Circle()
+                    )
+                    .overlay { Circle().stroke(.white.opacity(0.22), lineWidth: 1) }
+                    .shadow(color: .black.opacity(0.35), radius: 5, y: 3)
             }
             Button(action: player.next) {
                 Image(systemName: "forward.fill")
                     .frame(width: 62, height: 62)
-                    .background(.white.opacity(0.10), in: Circle())
+                    .background(
+                        LinearGradient(colors: [Color(white: 0.25), Color(white: 0.08)], startPoint: .top, endPoint: .bottom),
+                        in: Circle()
+                    )
+                    .overlay { Circle().stroke(.white.opacity(0.12), lineWidth: 1) }
             }
         }
         .font(.title2)
@@ -155,6 +176,14 @@ struct PlayerView: View {
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity)
         .padding(.vertical, 22)
-        .background(AppTheme.ink, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .background(
+            LinearGradient(colors: [Color(white: 0.14), Color(white: 0.045)], startPoint: .top, endPoint: .bottom),
+            in: RoundedRectangle(cornerRadius: 22, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 22)
+                .stroke(.white.opacity(0.10), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.16), radius: 10, y: 6)
     }
 }

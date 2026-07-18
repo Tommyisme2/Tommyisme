@@ -76,7 +76,7 @@ private struct MiniPlayer: View {
         HStack(spacing: 8) {
             Button(action: open) {
                 HStack(spacing: 12) {
-                    ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 8)
+                    ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 5)
                         .frame(width: 44, height: 44)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(player.currentTrack?.title ?? "")
@@ -95,13 +95,24 @@ private struct MiniPlayer: View {
                 Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
                     .font(.system(size: 14, weight: .bold))
                     .frame(width: 40, height: 40)
-                    .background(.white, in: Circle())
+                    .background(
+                        LinearGradient(colors: [.white, Color(white: 0.82)], startPoint: .top, endPoint: .bottom),
+                        in: Circle()
+                    )
                     .foregroundStyle(AppTheme.ink)
+                    .shadow(color: .black.opacity(0.35), radius: 3, y: 2)
             }
             .buttonStyle(PressableButtonStyle())
         }
         .padding(8)
-        .background(AppTheme.ink, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
+        .background(
+            LinearGradient(colors: [Color(white: 0.16), Color(white: 0.04)], startPoint: .top, endPoint: .bottom),
+            in: RoundedRectangle(cornerRadius: 13, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 13)
+                .stroke(.white.opacity(0.12), lineWidth: 1)
+        }
         .foregroundStyle(.white)
         .shadow(color: .black.opacity(0.18), radius: 14, y: 7)
     }

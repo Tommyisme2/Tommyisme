@@ -34,7 +34,7 @@ struct LibraryView: View {
 
                         HStack(alignment: .firstTextBaseline) {
                             Text("Albums")
-                                .font(.system(size: 32, weight: .black, design: .rounded))
+                                .font(.system(size: 28, weight: .bold))
                             Spacer()
                             Text("\(filteredAlbums.count) RELEASES")
                                 .font(.caption2.bold())
@@ -81,21 +81,21 @@ struct LibraryView: View {
 
     private var emptyLibrary: some View {
         VStack(spacing: 24) {
-            SpeakerGrille(rows: 8, columns: 8, dotSize: 8)
+            VinylRecordView()
+                .frame(width: 160, height: 160)
             VStack(spacing: 8) {
-                Text("YOUR MUSIC,\nYOUR WAY.")
-                    .font(.system(size: 34, weight: .black, design: .rounded))
+                Text("Your music library")
+                    .font(.system(size: 30, weight: .bold))
                     .multilineTextAlignment(.center)
-                Text("Bring in MP3 and FLAC albums.\nWe’ll sort the rest.")
+                Text("Import MP3 and FLAC albums.\nEmbedded metadata is organized automatically.")
                     .foregroundStyle(AppTheme.muted)
                     .multilineTextAlignment(.center)
             }
             Button {
                 isShowingImporter = true
             } label: {
-                Label("IMPORT MUSIC", systemImage: "plus")
-                    .font(.subheadline.bold())
-                    .tracking(0.8)
+                Label("Import Music", systemImage: "plus")
+                    .font(.subheadline.weight(.semibold))
                     .padding(.horizontal, 22)
                     .padding(.vertical, 14)
                     .background(AppTheme.ink, in: Capsule())
@@ -111,7 +111,7 @@ struct LibraryView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Text("Listening to...")
-                    .font(.system(size: 30, weight: .black, design: .rounded))
+                    .font(.system(size: 26, weight: .bold))
                 Spacer()
                 Button {
                     guard !filteredAlbums.isEmpty else { return }
@@ -157,11 +157,15 @@ struct LibraryView: View {
             }
         }
         .padding(18)
-        .background(AppTheme.paper, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .background(
+            LinearGradient(colors: [AppTheme.paper, AppTheme.raised.opacity(0.72)], startPoint: .top, endPoint: .bottom),
+            in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+        )
         .overlay {
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(AppTheme.ink.opacity(0.08), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(AppTheme.panelStroke, lineWidth: 1)
         }
+        .shadow(color: .black.opacity(0.07), radius: 10, y: 5)
     }
 }
 
@@ -176,10 +180,10 @@ private struct AlbumStack: View {
             ZStack(alignment: .leading) {
                 ForEach(Array(albums.enumerated()), id: \.element.id) { index, album in
                     Button { select(album) } label: {
-                        ArtworkView(fileName: album.artworkFileName, cornerRadius: 14)
+                        ArtworkView(fileName: album.artworkFileName, cornerRadius: 8)
                             .frame(width: coverSize, height: coverSize)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 14)
+                                RoundedRectangle(cornerRadius: 8)
                                     .stroke(.black.opacity(0.16), lineWidth: 1)
                             }
                             .shadow(color: .black.opacity(0.18), radius: 8, y: 5)
@@ -201,11 +205,11 @@ private struct AlbumTile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 9) {
-            ArtworkView(fileName: album.artworkFileName, cornerRadius: 14)
+            ArtworkView(fileName: album.artworkFileName, cornerRadius: 8)
                 .aspectRatio(1, contentMode: .fit)
                 .shadow(color: .black.opacity(0.14), radius: 8, y: 5)
             Text(album.title)
-                .font(.system(.headline, design: .rounded, weight: .bold))
+                .font(.headline.weight(.semibold))
                 .lineLimit(1)
             Text(album.artist)
                 .font(.caption)

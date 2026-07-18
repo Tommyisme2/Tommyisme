@@ -53,7 +53,7 @@ private struct LibraryStat: View {
     var body: some View {
         VStack(spacing: 5) {
             Text(value)
-                .font(.system(.headline, design: .rounded, weight: .black))
+                .font(.headline.weight(.semibold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.65)
             Text(label)
@@ -63,6 +63,13 @@ private struct LibraryStat: View {
         }
         .frame(maxWidth: .infinity)
         .frame(height: 78)
-        .background(AppTheme.canvas, in: RoundedRectangle(cornerRadius: 16))
+        .background(
+            LinearGradient(colors: [AppTheme.paper, AppTheme.raised], startPoint: .top, endPoint: .bottom),
+            in: RoundedRectangle(cornerRadius: 10)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(AppTheme.panelStroke, lineWidth: 1)
+        }
     }
 }
