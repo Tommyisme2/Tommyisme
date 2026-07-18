@@ -21,41 +21,44 @@ struct SongsView: View {
     var body: some View {
         List {
             ForEach(filteredTracks) { track in
-                Button {
-                    player.play(track, in: filteredTracks)
-                } label: {
-                    HStack(spacing: 12) {
-                        ArtworkView(fileName: track.artworkFileName, cornerRadius: 9)
-                            .frame(width: 50, height: 50)
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(track.title)
-                                .foregroundStyle(.primary)
-                                .lineLimit(1)
-                            Text("\(track.artist) · \(track.album)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
+                HStack(spacing: 8) {
+                    Button {
+                        player.play(track, in: filteredTracks)
+                    } label: {
+                        HStack(spacing: 12) {
+                            ArtworkView(fileName: track.artworkFileName, cornerRadius: 9)
+                                .frame(width: 50, height: 50)
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(track.title)
+                                    .foregroundStyle(.primary)
+                                    .lineLimit(1)
+                                Text("\(track.artist) · \(track.album)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                            }
+                            Spacer()
                         }
-                        Spacer()
-                        Menu {
-                            Button {
-                                library.toggleFavorite(track)
-                            } label: {
-                                Label(
-                                    track.isFavorite ? "Remove Favorite" : "Favorite",
-                                    systemImage: track.isFavorite ? "heart.slash" : "heart"
-                                )
-                            }
-                            Button("Edit Metadata", systemImage: "pencil") {
-                                editingTrack = track
-                            }
-                            Button("Delete", systemImage: "trash", role: .destructive) {
-                                library.delete([track])
-                            }
+                    }
+                    .buttonStyle(.plain)
+                    Menu {
+                        Button {
+                            library.toggleFavorite(track)
                         } label: {
-                            Image(systemName: "ellipsis")
-                                .frame(width: 32, height: 40)
+                            Label(
+                                track.isFavorite ? "Remove Favorite" : "Favorite",
+                                systemImage: track.isFavorite ? "heart.slash" : "heart"
+                            )
                         }
+                        Button("Edit Metadata", systemImage: "pencil") {
+                            editingTrack = track
+                        }
+                        Button("Delete", systemImage: "trash", role: .destructive) {
+                            library.delete([track])
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .frame(width: 32, height: 40)
                     }
                 }
             }

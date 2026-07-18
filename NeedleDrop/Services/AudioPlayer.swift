@@ -1,4 +1,5 @@
 import AVFoundation
+import Combine
 import MediaPlayer
 
 @MainActor
@@ -11,6 +12,7 @@ final class AudioPlayer: ObservableObject {
 
     private let player = AVPlayer()
     private var timeObserver: Any?
+    private var endObserver: NSObjectProtocol?
     private weak var library: LibraryStore?
 
     init() {
@@ -25,12 +27,24 @@ final class AudioPlayer: ObservableObject {
                 self?.updateNowPlaying()
             }
         }
-        NotificationCenter.default.addObserver(
+        endObserver = NotificationCenter.default.addObserver(
             forName: .AVPlayerItemDidPlayToEndTime,
             object: nil,
             queue: .main
-        ) { [weak self] _ in
-            Task { @MainActor in self?.next() }
+        ) { [weak self] notification in
+            Task { @MainActor in
+                guard notification.object as? AVPlayerItem === self?.player.currentItem else { return }
+                self?.next()
+            }
+        }
+    }
+
+    deinit {
+        if let timeObserver {
+            player.removeTimeObserver(timeObserver)
+        }
+        if let endObserver {
+            NotificationCenter.default.removeObserver(endObserver)
         }
     }
 
@@ -40,6 +54,7 @@ final class AudioPlayer: ObservableObject {
 
     func play(_ track: Track, in tracks: [Track]? = nil) {
         guard let library else { return }
+        try? AVAudioSession.sharedInstance().setActive(true)
         if let tracks { queue = tracks }
         if queue.isEmpty { queue = [track] }
 

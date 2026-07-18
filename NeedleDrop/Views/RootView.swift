@@ -71,35 +71,37 @@ private struct MiniPlayer: View {
     let open: () -> Void
 
     var body: some View {
-        Button(action: open) {
-            HStack(spacing: 12) {
-                ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 10)
-                    .frame(width: 46, height: 46)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(player.currentTrack?.title ?? "")
-                        .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
-                    Text(player.currentTrack?.artist ?? "")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+        HStack(spacing: 8) {
+            Button(action: open) {
+                HStack(spacing: 12) {
+                    ArtworkView(fileName: player.currentTrack?.artworkFileName, cornerRadius: 10)
+                        .frame(width: 46, height: 46)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(player.currentTrack?.title ?? "")
+                            .font(.subheadline.weight(.semibold))
+                            .lineLimit(1)
+                        Text(player.currentTrack?.artist ?? "")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                    Spacer()
                 }
-                Spacer()
-                Button(action: player.togglePlayback) {
-                    Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
-                        .font(.title3)
-                        .frame(width: 38, height: 38)
-                }
-                .buttonStyle(PressableButtonStyle())
             }
-            .padding(8)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(.white.opacity(0.55), lineWidth: 0.5)
+            .buttonStyle(PressableButtonStyle())
+            Button(action: player.togglePlayback) {
+                Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
+                    .font(.title3)
+                    .frame(width: 38, height: 38)
             }
+            .buttonStyle(PressableButtonStyle())
         }
-        .buttonStyle(PressableButtonStyle())
+        .padding(8)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(.white.opacity(0.55), lineWidth: 0.5)
+        }
         .foregroundStyle(.primary)
     }
 }

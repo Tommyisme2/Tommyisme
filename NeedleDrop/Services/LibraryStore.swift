@@ -1,4 +1,5 @@
 import AVFoundation
+import Combine
 import Foundation
 
 @MainActor
@@ -156,14 +157,14 @@ final class LibraryStore: ObservableObject {
         func string(for identifiers: [AVMetadataIdentifier], keys: [String] = []) async -> String {
             for identifier in identifiers {
                 if let item = AVMetadataItem.metadataItems(from: metadata, filteredByIdentifier: identifier).first,
-                   let value = try? await item.load(.stringValue), let value {
+                   let value = try? await item.load(.stringValue) {
                     return value
                 }
             }
             for item in metadata {
-                let key = String(describing: item.key ?? "").lowercased()
+                let key = item.key.map { String(describing: $0).lowercased() } ?? ""
                 if keys.contains(where: key.contains),
-                   let value = try? await item.load(.stringValue), let value {
+                   let value = try? await item.load(.stringValue) {
                     return value
                 }
             }
@@ -184,8 +185,7 @@ final class LibraryStore: ObservableObject {
             from: metadata,
             filteredByIdentifier: .commonIdentifierArtwork
         ).first,
-           let artworkData = try? await artworkItem.load(.dataValue),
-           let artworkData {
+           let artworkData = try? await artworkItem.load(.dataValue) {
             let name = "\(UUID().uuidString).jpg"
             try artworkData.write(to: artworkDirectory.appendingPathComponent(name), options: .atomic)
             artworkFileName = name
